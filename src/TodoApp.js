@@ -60,7 +60,7 @@ class FilterLink extends Component {
 }
 
 // For functional components, the context is the 2nd argument, after props
-const AddTodo = (props, { store }) => {
+let AddTodo = ({ dispatch }) => {
   let input;
 
   return (
@@ -72,9 +72,9 @@ const AddTodo = (props, { store }) => {
       />
       <button
         onClick={() => {
-          let text = input.value;
+          const text = input.value;
 
-          store.dispatch({
+          dispatch({
             type: "ADD_TODO",
             text: text.trim() === "" ? "Learning Redux" : text,
             id: nextTodoId++
@@ -88,9 +88,10 @@ const AddTodo = (props, { store }) => {
   );
 };
 
-AddTodo.contextTypes = {
-  store: PropTypes.object
-};
+// dispatch is injected as a prop to the wrapped component
+// if the args to connect are not provided
+// The component is also not subscribed to store updates
+AddTodo = connect()(AddTodo);
 
 const mapStateToProps = state => {
   return {
