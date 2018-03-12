@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import { connect } from "react-redux";
 
 let nextTodoId = 0;
@@ -22,42 +21,23 @@ const Link = ({ active, children, onClick }) => {
   );
 };
 
-class FilterLink extends Component {
-  static contextTypes = {
-    store: PropTypes.object
+// Accepts props as the 2nd argument
+const mapStateToLinkProps = (state, ownProps) => {
+  return {
+    active: ownProps.filter === state.visibilityFilter
   };
+};
 
-  componentDidMount() {
-    const { store } = this.context;
-    // Force re-render on store updates
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  }
+const mapDispatchToLinkProps = (dispatch, ownProps) => {
+  return {
+    onClick: dispatch({
+      type: "SET_VISIBILITY_FILTER",
+      filter: ownProps.filter
+    })
+  };
+};
 
-  componentWillUnmount() {
-    // Clean up the subscription to the redux store
-    this.unsubscribe();
-  }
-
-  render() {
-    const props = this.props;
-    const { store } = this.context;
-    const state = store.getState();
-
-    return (
-      <Link
-        active={props.filter === state.visibilityFilter}
-        onClick={() => {
-          store.dispatch({
-            type: "SET_VISIBILITY_FILTER",
-            filter: props.filter
-          });
-        }}
-      >
-        {props.children}
-      </Link>
-    );
-  }
-}
+const FilterLink = connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
 
 // For functional components, the context is the 2nd argument, after props
 let AddTodo = ({ dispatch }) => {
