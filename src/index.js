@@ -18,21 +18,7 @@ const render = () => {
           store.dispatch({ type: "DECREMENT" });
         }}
       />
-      <TodoApp
-        {...store.getState()}
-        toggleTodo={todoId => {
-          store.dispatch({
-            type: "TOGGLE_TODO",
-            id: todoId
-          });
-        }}
-        onChangeVisibility={filter => {
-          store.dispatch({
-            type: "SET_VISIBILITY_FILTER",
-            filter
-          });
-        }}
-      />
+      <TodoApp {...store.getState()} />
     </div>,
     document.getElementById("root")
   );

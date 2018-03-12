@@ -107,12 +107,7 @@ const getVisibleTodos = (todos, filter) => {
   }
 };
 
-const TodoApp = ({
-  todos,
-  visibilityFilter,
-  onChangeVisibility,
-  toggleTodo
-}) => (
+const TodoApp = ({ todos, visibilityFilter }) => (
   <div>
     <AddTodo
       onClickAdd={text => {
@@ -125,11 +120,21 @@ const TodoApp = ({
     />
     <TodoList
       todos={getVisibleTodos(todos, visibilityFilter)}
-      onTodoClick={toggleTodo}
+      onTodoClick={todoId => {
+        store.dispatch({
+          type: "TOGGLE_TODO",
+          id: todoId
+        });
+      }}
     />
     <Footer
       visibilityFilter={visibilityFilter}
-      onChangeVisibility={onChangeVisibility}
+      onChangeVisibility={filter => {
+        store.dispatch({
+          type: "SET_VISIBILITY_FILTER",
+          filter
+        });
+      }}
     />
   </div>
 );
