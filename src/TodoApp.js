@@ -1,9 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
+import { addTodoItem, setVisibilityFilter, toggleTodo } from "./actionCreators";
 
-let nextTodoId = 0;
-
-const Link = ({ active, children, onClick }) => {
+const Link = ({ active, children, onClickAddTodo }) => {
   // Unstyled text instead of a link for the active filter
   if (active) {
     return <span>{children}</span>;
@@ -31,10 +30,7 @@ const mapStateToLinkProps = (state, ownProps) => {
 const mapDispatchToLinkProps = (dispatch, ownProps) => {
   return {
     onClickAddTodo: () => {
-      dispatch({
-        type: "SET_VISIBILITY_FILTER",
-        filter: ownProps.filter
-      });
+      dispatch(setVisibilityFilter(ownProps.filter));
     }
   };
 };
@@ -55,12 +51,7 @@ let AddTodo = ({ dispatch }) => {
       <button
         onClick={() => {
           const text = input.value;
-
-          dispatch({
-            type: "ADD_TODO",
-            text: text.trim() === "" ? "Learning Redux" : text,
-            id: nextTodoId++
-          });
+          dispatch(addTodoItem(text));
           input.value = "";
         }}
       >
@@ -97,10 +88,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onTodoClick: id => {
-      dispatch({
-        type: "TOGGLE_TODO",
-        id
-      });
+      dispatch(toggleTodo(id));
     }
   };
 };
