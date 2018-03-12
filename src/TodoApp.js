@@ -3,14 +3,9 @@ import store from "./store";
 
 let nextTodoId = 0;
 
-const FilterLink = ({
-  filter,
-  currentFilter,
-  onChangeVisibility,
-  children
-}) => {
+const Link = ({ active, children, onClick }) => {
   // Unstyled text instead of a link for the active filter
-  if (filter === currentFilter) {
+  if (active) {
     return <span>{children}</span>;
   }
   return (
@@ -18,13 +13,44 @@ const FilterLink = ({
       href="#"
       onClick={e => {
         e.preventDefault();
-        onChangeVisibility(filter);
+        onClick();
       }}
     >
       {children}
     </a>
   );
 };
+
+class FilterLink extends Component {
+  componentDidMount() {
+    // Force re-render on store updates
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    // Clean up the subscription to the redux store
+    this.unsubscribe();
+  }
+
+  render() {
+    const props = this.props;
+    const state = store.getState();
+
+    return (
+      <Link
+        active={props.filter === state.visibilityFilter}
+        onClick={() => {
+          store.dispatch({
+            type: "SET_VISIBILITY_FILTER",
+            filter: props.filter
+          });
+        }}
+      >
+        {props.children}
+      </Link>
+    );
+  }
+}
 
 const AddTodo = ({ onClickAdd }) => {
   let input;
@@ -67,30 +93,11 @@ const Todo = ({ onClick, completed, text }) => (
   </li>
 );
 
-const Footer = ({ onChangeVisibility, visibilityFilter }) => (
+const Footer = () => (
   <p>
-    Show:{" "}
-    <FilterLink
-      filter="SHOW_ALL"
-      onChangeVisibility={onChangeVisibility}
-      currentFilter={visibilityFilter}
-    >
-      All
-    </FilterLink>{" "}
-    <FilterLink
-      filter="SHOW_ACTIVE"
-      onChangeVisibility={onChangeVisibility}
-      currentFilter={visibilityFilter}
-    >
-      Active
-    </FilterLink>{" "}
-    <FilterLink
-      filter="SHOW_COMPLETED"
-      onChangeVisibility={onChangeVisibility}
-      currentFilter={visibilityFilter}
-    >
-      Completed
-    </FilterLink>
+    Show: <FilterLink filter="SHOW_ALL">All</FilterLink>{" "}
+    <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>{" "}
+    <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
   </p>
 );
 
@@ -127,15 +134,7 @@ const TodoApp = ({ todos, visibilityFilter }) => (
         });
       }}
     />
-    <Footer
-      visibilityFilter={visibilityFilter}
-      onChangeVisibility={filter => {
-        store.dispatch({
-          type: "SET_VISIBILITY_FILTER",
-          filter
-        });
-      }}
-    />
+    <Footer />
   </div>
 );
 
