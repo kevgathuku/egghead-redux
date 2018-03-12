@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 let nextTodoId = 0;
 
@@ -91,39 +92,22 @@ AddTodo.contextTypes = {
   store: PropTypes.object
 };
 
-class VisibleTodoList extends Component {
-  static contextTypes = {
-    store: PropTypes.object
+const mapStateToProps = state => {
+  return {
+    todos: getVisibleTodos(state.todos, state.visibilityFilter)
   };
+};
 
-  componentDidMount() {
-    const { store } = this.context;
-    // Force re-render on store updates
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  }
-
-  componentWillUnmount() {
-    // Clean up the subscription to the redux store
-    this.unsubscribe();
-  }
-
-  render() {
-    const { store } = this.context;
-    const state = store.getState();
-
-    return (
-      <TodoList
-        todos={getVisibleTodos(state.todos, state.visibilityFilter)}
-        onTodoClick={todoId => {
-          store.dispatch({
-            type: "TOGGLE_TODO",
-            id: todoId
-          });
-        }}
-      />
-    );
-  }
-}
+const mapDispatchToProps = dispatch => {
+  return {
+    onTodoClick: id => {
+      dispatch({
+        type: "TOGGLE_TODO",
+        id
+      });
+    }
+  };
+};
 
 const TodoList = ({ todos, onTodoClick }) => (
   <ul>
@@ -132,6 +116,8 @@ const TodoList = ({ todos, onTodoClick }) => (
     ))}
   </ul>
 );
+
+const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(TodoList);
 
 const Todo = ({ onClick, completed, text }) => (
   <li
@@ -146,16 +132,9 @@ const Todo = ({ onClick, completed, text }) => (
 
 const Footer = ({ store }) => (
   <p>
-    Show:{" "}
-    <FilterLink filter="SHOW_ALL">
-      All
-    </FilterLink>{" "}
-    <FilterLink filter="SHOW_ACTIVE">
-      Active
-    </FilterLink>{" "}
-    <FilterLink filter="SHOW_COMPLETED">
-      Completed
-    </FilterLink>
+    Show: <FilterLink filter="SHOW_ALL">All</FilterLink>{" "}
+    <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>{" "}
+    <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
   </p>
 );
 
