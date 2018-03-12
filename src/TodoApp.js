@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import store from "./store";
+import PropTypes from "prop-types";
 
 let nextTodoId = 0;
 
@@ -22,7 +22,12 @@ const Link = ({ active, children, onClick }) => {
 };
 
 class FilterLink extends Component {
+  static contextTypes = {
+    store: PropTypes.object
+  };
+
   componentDidMount() {
+    const { store } = this.context;
     // Force re-render on store updates
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
   }
@@ -34,6 +39,7 @@ class FilterLink extends Component {
 
   render() {
     const props = this.props;
+    const { store } = this.context;
     const state = store.getState();
 
     return (
@@ -52,7 +58,8 @@ class FilterLink extends Component {
   }
 }
 
-const AddTodo = ({ onClickAdd }) => {
+// For functional components, the context is the 2nd argument, after props
+const AddTodo = (props, { store }) => {
   let input;
 
   return (
@@ -80,8 +87,17 @@ const AddTodo = ({ onClickAdd }) => {
   );
 };
 
+AddTodo.contextTypes = {
+  store: PropTypes.object
+};
+
 class VisibleTodoList extends Component {
+  static contextTypes = {
+    store: PropTypes.object
+  };
+
   componentDidMount() {
+    const { store } = this.context;
     // Force re-render on store updates
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
   }
@@ -92,7 +108,7 @@ class VisibleTodoList extends Component {
   }
 
   render() {
-    const props = this.props;
+    const { store } = this.context;
     const state = store.getState();
 
     return (
@@ -128,11 +144,18 @@ const Todo = ({ onClick, completed, text }) => (
   </li>
 );
 
-const Footer = () => (
+const Footer = ({ store }) => (
   <p>
-    Show: <FilterLink filter="SHOW_ALL">All</FilterLink>{" "}
-    <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>{" "}
-    <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
+    Show:{" "}
+    <FilterLink filter="SHOW_ALL">
+      All
+    </FilterLink>{" "}
+    <FilterLink filter="SHOW_ACTIVE">
+      Active
+    </FilterLink>{" "}
+    <FilterLink filter="SHOW_COMPLETED">
+      Completed
+    </FilterLink>
   </p>
 );
 

@@ -11,6 +11,7 @@ class Provider extends Component {
   static childContextTypes = {
     store: PropTypes.object
   };
+
   getChildContext() {
     return {
       store: this.props.store
@@ -25,7 +26,7 @@ class Provider extends Component {
 ReactDOM.render(
   <Provider store={store}>
     <Counter />
-    <TodoApp store={store} />
+    <TodoApp />
   </Provider>,
   document.getElementById("root")
 );
