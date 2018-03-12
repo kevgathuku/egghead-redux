@@ -13,7 +13,7 @@ const Link = ({ active, children, onClick }) => {
       href="#"
       onClick={e => {
         e.preventDefault();
-        onClick();
+        onClickAddTodo();
       }}
     >
       {children}
@@ -30,10 +30,12 @@ const mapStateToLinkProps = (state, ownProps) => {
 
 const mapDispatchToLinkProps = (dispatch, ownProps) => {
   return {
-    onClick: dispatch({
-      type: "SET_VISIBILITY_FILTER",
-      filter: ownProps.filter
-    })
+    onClickAddTodo: () => {
+      dispatch({
+        type: "SET_VISIBILITY_FILTER",
+        filter: ownProps.filter
+      });
+    }
   };
 };
 
@@ -72,6 +74,19 @@ let AddTodo = ({ dispatch }) => {
 // if the args to connect are not provided
 // The component is also not subscribed to store updates
 AddTodo = connect()(AddTodo);
+
+const getVisibleTodos = (todos, filter) => {
+  switch (filter) {
+    case "SHOW_ALL":
+      return todos;
+    case "SHOW_COMPLETED":
+      return todos.filter(item => item.completed);
+    case "SHOW_ACTIVE":
+      return todos.filter(item => !item.completed);
+    default:
+      return todos;
+  }
+};
 
 const mapStateToProps = state => {
   return {
@@ -118,19 +133,6 @@ const Footer = ({ store }) => (
     <FilterLink filter="SHOW_COMPLETED">Completed</FilterLink>
   </p>
 );
-
-const getVisibleTodos = (todos, filter) => {
-  switch (filter) {
-    case "SHOW_ALL":
-      return todos;
-    case "SHOW_COMPLETED":
-      return todos.filter(item => item.completed);
-    case "SHOW_ACTIVE":
-      return todos.filter(item => !item.completed);
-    default:
-      return todos;
-  }
-};
 
 const TodoApp = () => (
   <div>
