@@ -64,7 +64,13 @@ const AddTodo = ({ onClickAdd }) => {
       />
       <button
         onClick={() => {
-          onClickAdd(input.value);
+          let text = input.value;
+
+          store.dispatch({
+            type: "ADD_TODO",
+            text: text.trim() === "" ? "Learning Redux" : text,
+            id: nextTodoId++
+          });
           input.value = "";
         }}
       >
@@ -73,6 +79,35 @@ const AddTodo = ({ onClickAdd }) => {
     </React.Fragment>
   );
 };
+
+class VisibleTodoList extends Component {
+  componentDidMount() {
+    // Force re-render on store updates
+    this.unsubscribe = store.subscribe(() => this.forceUpdate());
+  }
+
+  componentWillUnmount() {
+    // Clean up the subscription to the redux store
+    this.unsubscribe();
+  }
+
+  render() {
+    const props = this.props;
+    const state = store.getState();
+
+    return (
+      <TodoList
+        todos={getVisibleTodos(state.todos, state.visibilityFilter)}
+        onTodoClick={todoId => {
+          store.dispatch({
+            type: "TOGGLE_TODO",
+            id: todoId
+          });
+        }}
+      />
+    );
+  }
+}
 
 const TodoList = ({ todos, onTodoClick }) => (
   <ul>
@@ -114,26 +149,10 @@ const getVisibleTodos = (todos, filter) => {
   }
 };
 
-const TodoApp = ({ todos, visibilityFilter }) => (
+const TodoApp = () => (
   <div>
-    <AddTodo
-      onClickAdd={text => {
-        store.dispatch({
-          type: "ADD_TODO",
-          text: text.trim() === "" ? "Learning Redux" : text,
-          id: nextTodoId++
-        });
-      }}
-    />
-    <TodoList
-      todos={getVisibleTodos(todos, visibilityFilter)}
-      onTodoClick={todoId => {
-        store.dispatch({
-          type: "TOGGLE_TODO",
-          id: todoId
-        });
-      }}
-    />
+    <AddTodo />
+    <VisibleTodoList />
     <Footer />
   </div>
 );

@@ -6,26 +6,12 @@ import registerServiceWorker from "./registerServiceWorker";
 import store from "./store";
 import "./index.css";
 
-const render = () => {
-  ReactDOM.render(
-    <div>
-      <Counter
-        value={store.getState().counter}
-        onIncrement={() => {
-          store.dispatch({ type: "INCREMENT" });
-        }}
-        onDecrement={() => {
-          store.dispatch({ type: "DECREMENT" });
-        }}
-      />
-      <TodoApp {...store.getState()} />
-    </div>,
-    document.getElementById("root")
-  );
-};
-
-store.subscribe(render);
-// Render first time
-render();
+ReactDOM.render(
+  <div>
+    <Counter />
+    <TodoApp />
+  </div>,
+  document.getElementById("root")
+);
 
 registerServiceWorker();
