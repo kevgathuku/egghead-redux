@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import store from "./store";
+
+let nextTodoId = 0;
 
 const FilterLink = ({
   filter,
@@ -108,11 +111,18 @@ const TodoApp = ({
   todos,
   visibilityFilter,
   onChangeVisibility,
-  onAddTodo,
   toggleTodo
 }) => (
   <div>
-    <AddTodo onClickAdd={onAddTodo} />
+    <AddTodo
+      onClickAdd={text => {
+        store.dispatch({
+          type: "ADD_TODO",
+          text: text.trim() === "" ? "Learning Redux" : text,
+          id: nextTodoId++
+        });
+      }}
+    />
     <TodoList
       todos={getVisibleTodos(todos, visibilityFilter)}
       onTodoClick={toggleTodo}

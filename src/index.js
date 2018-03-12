@@ -1,23 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore, combineReducers } from "redux";
 import Counter from "./Counter";
 import TodoApp from "./TodoApp";
 import registerServiceWorker from "./registerServiceWorker";
+import store from "./store";
 import "./index.css";
-import { counter, todos, visibilityFilter } from "./reducer";
-
-let nextTodoId = 0;
-
-const todoApp = combineReducers({
-  counter,
-  todos,
-  visibilityFilter
-});
-const store = createStore(
-  todoApp,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
 
 const render = () => {
   ReactDOM.render(
@@ -33,13 +20,6 @@ const render = () => {
       />
       <TodoApp
         {...store.getState()}
-        onAddTodo={text => {
-          store.dispatch({
-            type: "ADD_TODO",
-            text: text.trim() === "" ? "Learning Redux" : text,
-            id: nextTodoId++
-          });
-        }}
         toggleTodo={todoId => {
           store.dispatch({
             type: "TOGGLE_TODO",
