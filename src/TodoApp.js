@@ -1,6 +1,15 @@
 import React, { Component } from "react";
 
-const FilterLink = ({ filter, onChangeVisibility, children }) => {
+const FilterLink = ({
+  filter,
+  currentFilter,
+  onChangeVisibility,
+  children
+}) => {
+  // Regular text instead of a link for the active filter
+  if (filter === currentFilter) {
+    return <span>{children}</span>;
+  }
   return (
     <a
       href="#"
@@ -13,6 +22,25 @@ const FilterLink = ({ filter, onChangeVisibility, children }) => {
     </a>
   );
 };
+
+const TodoList = ({ todos, onTodoClick }) => (
+  <ul>
+    {todos.map(todo => (
+      <Todo key={todo.id} {...todo} onClick={() => onTodoClick(todo.id)} />
+    ))}
+  </ul>
+);
+
+const Todo = ({ onClick, completed, text }) => (
+  <li
+    onClick={onClick}
+    style={{
+      textDecoration: completed ? "line-through" : "none"
+    }}
+  >
+    {text}
+  </li>
+);
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
@@ -52,38 +80,27 @@ class TodoApp extends Component {
         >
           Add Todo
         </button>
-        <ul>
-          {visibleTodos.map(todo => (
-            <li
-              key={todo.id}
-              onClick={() => {
-                toggleTodo(todo.id);
-              }}
-              style={{
-                textDecoration: todo.completed ? "line-through" : "none"
-              }}
-            >
-              {todo.text}
-            </li>
-          ))}
-        </ul>
+        <TodoList todos={visibleTodos} onTodoClick={toggleTodo} />
         <p>
           Show:{" "}
           <FilterLink
             filter="SHOW_ALL"
             onChangeVisibility={onChangeVisibility}
+            currentFilter={visibilityFilter}
           >
             All
           </FilterLink>{" "}
           <FilterLink
             filter="SHOW_ACTIVE"
             onChangeVisibility={onChangeVisibility}
+            currentFilter={visibilityFilter}
           >
             Active
           </FilterLink>{" "}
           <FilterLink
             filter="SHOW_COMPLETED"
             onChangeVisibility={onChangeVisibility}
+            currentFilter={visibilityFilter}
           >
             Completed
           </FilterLink>
