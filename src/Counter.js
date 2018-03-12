@@ -1,8 +1,13 @@
 import React, { Component } from "react";
-import store from "./store";
+import PropTypes from "prop-types";
 
 class Counter extends Component {
+  static contextTypes = {
+    store: PropTypes.object
+  };
+
   componentDidMount() {
+    const { store } = this.context;
     // Force re-render on store updates
     this.unsubscribe = store.subscribe(() => this.forceUpdate());
   }
@@ -13,6 +18,7 @@ class Counter extends Component {
   }
 
   render() {
+    const { store } = this.context;
     const state = store.getState();
 
     return (
