@@ -1,7 +1,7 @@
 const expect = require("expect");
 const deepFreeze = require("deep-freeze");
 
-const todos = require("./reducer");
+const todos = require("./reducer").todos;
 
 const testAddTodo = () => {
   const stateBefore = [];
