@@ -29,10 +29,14 @@ const getVisibleTodos = (todos, filter) => {
 
 class TodoApp extends Component {
   render() {
-    const visibleTodos = getVisibleTodos(
-      this.props.todos,
-      this.props.visibilityFilter
-    );
+    const {
+      todos,
+      visibilityFilter,
+      onChangeVisibility,
+      onAddTodo,
+      toggleTodo
+    } = this.props;
+    const visibleTodos = getVisibleTodos(todos, visibilityFilter);
     return (
       <div>
         <input
@@ -42,7 +46,7 @@ class TodoApp extends Component {
         />
         <button
           onClick={() => {
-            this.props.onAddTodo(this.input.value);
+            onAddTodo(this.input.value);
             this.input.value = "";
           }}
         >
@@ -53,7 +57,7 @@ class TodoApp extends Component {
             <li
               key={todo.id}
               onClick={() => {
-                this.props.toggleTodo(todo.id);
+                toggleTodo(todo.id);
               }}
               style={{
                 textDecoration: todo.completed ? "line-through" : "none"
@@ -67,19 +71,19 @@ class TodoApp extends Component {
           Show:{" "}
           <FilterLink
             filter="SHOW_ALL"
-            onChangeVisibility={this.props.onChangeVisibility}
+            onChangeVisibility={onChangeVisibility}
           >
             All
           </FilterLink>{" "}
           <FilterLink
             filter="SHOW_ACTIVE"
-            onChangeVisibility={this.props.onChangeVisibility}
+            onChangeVisibility={onChangeVisibility}
           >
             Active
           </FilterLink>{" "}
           <FilterLink
             filter="SHOW_COMPLETED"
-            onChangeVisibility={this.props.onChangeVisibility}
+            onChangeVisibility={onChangeVisibility}
           >
             Completed
           </FilterLink>
