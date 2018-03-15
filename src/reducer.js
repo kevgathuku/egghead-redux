@@ -36,6 +36,13 @@ const todos = (state = [], action) => {
       return [...state, todo(undefined, action)];
     case "TOGGLE_TODO":
       return state.map(item => todo(item, action));
+    case "TODOS_LOADED":
+      const todos = action.todos.slice(150).map(item => {
+        item.id += 100;
+        item.text = item.title;
+        return item;
+      });
+      return state.concat(todos);
     default:
       return state;
   }

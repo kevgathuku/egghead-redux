@@ -21,3 +21,23 @@ export const toggleTodo = id => {
     id
   };
 };
+
+export const fetchTodos = () => {
+  return {
+    type: "FETCH_TODOS"
+  };
+};
+
+export function todosLoaded(todos) {
+  return {
+    type: "TODOS_LOADED",
+    todos
+  };
+}
+
+export function fetchTodosFailed(error) {
+  return {
+    type: "TODOS_LOADING_FAILED",
+    error
+  };
+}

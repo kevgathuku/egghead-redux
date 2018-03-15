@@ -1,6 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addTodoItem, setVisibilityFilter, toggleTodo } from "./actionCreators";
+import {
+  addTodoItem,
+  fetchTodos,
+  setVisibilityFilter,
+  toggleTodo
+} from "./actionCreators";
 
 const Link = ({ active, children, onClickAddTodo }) => {
   // Unstyled text instead of a link for the active filter
@@ -56,6 +61,13 @@ let AddTodo = ({ dispatch }) => {
       >
         Add Todo
       </button>
+      <button
+        onClick={() => {
+          dispatch(fetchTodos());
+        }}
+      >
+        Fetch Remote Todos
+      </button>
     </React.Fragment>
   );
 };
@@ -100,7 +112,9 @@ const TodoList = ({ todos, onTodoClick }) => (
   </ul>
 );
 
-const VisibleTodoList = connect(mapStateToProps, mapDispatchToProps)(TodoList);
+const TodoListContainer = connect(mapStateToProps, mapDispatchToProps)(
+  TodoList
+);
 
 const Todo = ({ onClick, completed, text }) => (
   <li
@@ -124,7 +138,7 @@ const Footer = ({ store }) => (
 const TodoApp = () => (
   <div>
     <AddTodo />
-    <VisibleTodoList />
+    <TodoListContainer />
     <Footer />
   </div>
 );
