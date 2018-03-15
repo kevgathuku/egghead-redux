@@ -1,5 +1,7 @@
-import { createStore, combineReducers } from "redux";
+import { applyMiddleware, compose, createStore, combineReducers } from "redux";
+import createSagaMiddleware from "redux-saga";
 import { counter, todos, visibilityFilter } from "./reducer";
+import rootSaga from "./sagas";
 
 const todoApp = combineReducers({
   counter,
@@ -7,9 +9,14 @@ const todoApp = combineReducers({
   visibilityFilter
 });
 
+const sagaMiddleware = createSagaMiddleware();
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const store = createStore(
   todoApp,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeEnhancers(applyMiddleware(sagaMiddleware))
 );
+
+sagaMiddleware.run(rootSaga);
 
 export default store;

@@ -37,7 +37,6 @@ const mapDispatchToLinkProps = (dispatch, ownProps) => {
 
 const FilterLink = connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
 
-// For functional components, the context is the 2nd argument, after props
 let AddTodo = ({ dispatch }) => {
   let input;
 

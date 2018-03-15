@@ -1,46 +1,44 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
 
-class Counter extends Component {
-  static contextTypes = {
-    store: PropTypes.object
+const mapStateToLinkProps = state => {
+  return {
+    value: state.counter
   };
+};
 
-  componentDidMount() {
-    const { store } = this.context;
-    // Force re-render on store updates
-    this.unsubscribe = store.subscribe(() => this.forceUpdate());
-  }
+const mapDispatchToLinkProps = dispatch => {
+  return {
+    onClickIncrement: () => {
+      dispatch({ type: "INCREMENT" });
+    },
+    onClickDecrement: () => {
+      dispatch({ type: "DECREMENT" });
+    },
+    onClickIncrementAsync: () => {
+      dispatch({ type: "INCREMENT_ASYNC" });
+    }
+  };
+};
 
-  componentWillUnmount() {
-    // Clean up the subscription to the redux store
-    this.unsubscribe();
-  }
+const Counter = ({
+  value,
+  onClickIncrement,
+  onClickDecrement,
+  onClickIncrementAsync
+}) => {
+  return (
+    <React.Fragment>
+      <h1>{value}</h1>
+      <button onClick={onClickIncrementAsync}>Increment after 1 second</button>
+      <button onClick={onClickIncrement}>Increment</button>
+      <button onClick={onClickDecrement}>Decrement</button>
+    </React.Fragment>
+  );
+};
 
-  render() {
-    const { store } = this.context;
-    const state = store.getState();
+const CounterContainer = connect(mapStateToLinkProps, mapDispatchToLinkProps)(
+  Counter
+);
 
-    return (
-      <React.Fragment>
-        <h1> {state.counter}</h1>
-        <button
-          onClick={() => {
-            store.dispatch({ type: "INCREMENT" });
-          }}
-        >
-          +
-        </button>
-        <button
-          onClick={() => {
-            store.dispatch({ type: "DECREMENT" });
-          }}
-        >
-          -
-        </button>
-      </React.Fragment>
-    );
-  }
-}
-
-export default Counter;
+export default CounterContainer;
