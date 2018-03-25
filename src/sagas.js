@@ -3,10 +3,6 @@ import { all, call, put, takeEvery } from "redux-saga/effects";
 import { fetchRemoteTodos } from "./api-client";
 import { fetchTodosFailed, todosLoaded } from "./actionCreators";
 
-export function* helloSaga() {
-  console.log("Hello Sagas!");
-}
-
 // Our worker Saga: will perform the async increment task
 export function* incrementAsync() {
   yield delay(1000);
@@ -38,5 +34,5 @@ export function* watchFetchTodos() {
 
 // single entry point to start all Sagas at once
 export default function* rootSaga() {
-  yield all([helloSaga(), watchIncrementAsync(), watchFetchTodos()]);
+  yield all([watchIncrementAsync(), watchFetchTodos()]);
 }

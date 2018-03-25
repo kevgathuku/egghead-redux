@@ -9,10 +9,8 @@ import "./index.css";
 
 ReactDOM.render(
   <Provider store={store}>
-    <React.Fragment>
-      <Counter />
-      <TodoApp />
-    </React.Fragment>
+    <Counter />
+    <TodoApp />
   </Provider>,
   document.getElementById("root")
 );
